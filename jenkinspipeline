@@ -4,7 +4,7 @@ pipeline {
     
     environment {
         
-        registry = "109367407331.dkr.ecr.us-east-1.amazonaws.com/dockerjenkinsecs"
+        registry = "700523735250.dkr.ecr.us-east-1.amazonaws.com/jenkinsapp"
     }
         
     stages {
@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
            
             steps {
-            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dibiye2010/Docker-Jenkins-Intergration-Repo.git']]])    
+            checkout([$class: 'GitSCM', branches: [[name: '*/development']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dibiye2010/Docker-Jenkins-Intergration-Repo.git']]])    
             }
         }
         
@@ -28,28 +28,10 @@ pipeline {
              steps {
                     script {
                            sh  'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 109367407331.dkr.ecr.us-east-1.amazonaws.com'
-                           sh  'docker push 109367407331.dkr.ecr.us-east-1.amazonaws.com/dockerjenkinsecs:latest'
+                           sh  'docker push 700523735250.dkr.ecr.us-east-1.amazonaws.com/jenkinsapp:latest'
                     }
              }
              
-        }
-        
-        stage('Stop Previous Containers') {
-             steps {
-                    script {
-                           sh  'docker ps -f name=our-apache-webserver:v1 -q | xargs --no-run-if-empty docker container stop'
-                           sh  'docker container ls -a -fname=our-apache-webserver:v1 -q | xargs -r docker container rm'
-                    }
-              }
-              
-        stage('Docker Run') {
-             steps {
-                    script {
-                           sh  'docker run -d -p 80:80 --rm --name our-apache-webser:v1 109367407331.dkr.ecr.us-east-1.amazonaws.com/dockerjenkinsecs:latest'
-                    }
-             }
-        }
-        }
     }
     
 }
