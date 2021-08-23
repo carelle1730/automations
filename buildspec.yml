@@ -6,10 +6,7 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws --version
       - $(aws ecr get-login --region us-east-1 --no-include-email)
-      - REPOSITORY_URI= 
-      - git config --global credentials.helper 'store'
-      - cat ~/.gitconfig
-      - cat ~/.git-credentials
+      - REPOSITORY_URI=
       - ASSUME_ROLE_ARN="arn:aws:iam::700523735250:role/pipelineassumerole"
       - TEMP_ROLE=$(aws sts assume-role --role-arn $ASSUME_ROLE_ARN)
       - export TEMP_ROLE
