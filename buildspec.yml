@@ -1,16 +1,22 @@
 version: 0.2
 phases:
-  install:
+
+  pre_build:
     commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login --region $AWS_DEFAULTREGION --no-include-email)
+      - REPOSITORY_URI= 
+      - git config --global credentials.helper 'store'
+      - cat ~/.gitconfig
+      - cat ~/.git-credentials
       - ASSUME_ROLE_ARN="arn:aws:iam::700523735250:role/pipelineassumerole"
-      - TEMP_ROLE=$(aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name test)
+      - TEMP_ROLE=$(aws sts assume-role --role-arn $ASSUME_ROLE_ARN)
       - export TEMP_ROLE
       - export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.AccessKeyId')
       - export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SecretAccessKey')
       - export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SessionToken')
       - echo install step...
-  pre_build:
-    commands:
       - echo logging in to AWS ECR...
       - $(aws ecr get-login --no-include-email --region us-east-1)
   build:
