@@ -13,7 +13,7 @@ phases:
   build:
     commands:
       - echo build Docker image on `date`
-      
+      - cd automations
       - docker build -t codebuildapp:latest .
       - docker tag codebuildapp:latest <700523735250.dkr.ecr.us-east-1.amazonaws.com/codebuildapp>/codebuildapp:latest
   post_build:
